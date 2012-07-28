@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:annotation-config/>
+
+	<!-- Begin DataSource configuration -->
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="${jdbc.driverClassName}"/>
+	    <property name="url" value="${jdbc.url}"/>
+	    <property name="username" value="${jdbc.username}"/>
+	    <property name="password" value="${jdbc.password}"/>
+	</bean>
+	
+	<context:property-placeholder location="classpath:/jdbc.properties"/>
+	
+	<bean id="databaseInitialization" class="org.nebulae2us.stardust.example.DatabaseInitialization" autowire="byName"/>
+	
+	<!-- End DataSource configuration -->
+	
+	<!-- Begin TransactionManager configuration -->
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
+	<tx:annotation-driven/>
+	
+	<!-- End TransactionManager -->
+
+	<!-- Begin Stardust configuration -->
+
+	<bean id="springManagedDataSource" class="org.nebulae2us.stardust.dao.SpringManagedDataSource">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+
+	<bean id="dialect" class="org.nebulae2us.stardust.dialect.DerbyDialect"/>
+
+	<bean id="jdbcExecutor" class="org.nebulae2us.stardust.dao.JdbcExecutor">
+		<constructor-arg ref="springManagedDataSource"/>
+		<constructor-arg ref="dialect"></constructor-arg>
+	</bean>
+
+
+	<bean id="daoManager" class="org.nebulae2us.stardust.DaoManager">
+		<constructor-arg ref="springManagedDataSource"/>
+		<constructor-arg ref="dialect"></constructor-arg>
+		<property name="packageToScan"><value>org.nebulae2us.stardust.example.model</value></property>
+	</bean>
+	
+	<!-- End Stardust configuration -->
+
+	<!-- Begin Bean configuration -->
+	
+	<bean id="commentService" class="org.nebulae2us.stardust.example.service.impl.CommentServiceImpl" autowire="byName" />
+	
+	
+	<!-- End Bean configuration -->
+
+</beans>
