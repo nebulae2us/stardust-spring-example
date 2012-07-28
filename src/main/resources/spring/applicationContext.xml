@@ -11,11 +11,11 @@
 
 	<!-- Begin DataSource configuration -->
 	
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-	    <property name="driverClassName" value="${jdbc.driverClassName}"/>
-	    <property name="url" value="${jdbc.url}"/>
-	    <property name="username" value="${jdbc.username}"/>
-	    <property name="password" value="${jdbc.password}"/>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	    <property name="driverClass" value="${driverClass}"/>
+	    <property name="url" value="${url}"/>
+	    <property name="username" value="${username}"/>
+	    <property name="password" value="${password}"/>
 	</bean>
 	
 	<context:property-placeholder location="classpath:/jdbc.properties"/>
@@ -40,7 +40,7 @@
 		<constructor-arg ref="dataSource"/>
 	</bean>
 
-	<bean id="dialect" class="org.nebulae2us.stardust.dialect.DerbyDialect"/>
+	<bean id="dialect" class="org.nebulae2us.stardust.dialect.${dialect}Dialect"/>
 
 	<bean id="jdbcExecutor" class="org.nebulae2us.stardust.dao.JdbcExecutor">
 		<constructor-arg ref="springManagedDataSource"/>

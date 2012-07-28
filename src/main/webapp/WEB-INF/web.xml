@@ -26,7 +26,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>/rest/*</url-pattern>
+		<url-pattern>/example/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>

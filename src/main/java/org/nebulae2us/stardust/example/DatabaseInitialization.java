@@ -20,7 +20,6 @@ import java.util.List;
 import org.nebulae2us.stardust.DaoManager;
 import org.nebulae2us.stardust.dao.JdbcExecutor;
 import org.nebulae2us.stardust.ddl.domain.DDLGenerator;
-import org.nebulae2us.stardust.example.model.Comment;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -36,7 +35,6 @@ public class DatabaseInitialization implements InitializingBean {
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-
 		DDLGenerator ddlGenerator = new DDLGenerator(daoManager.getDialect(), daoManager.getEntityRepository());
 		List<String> ddls = ddlGenerator.generateCreateSchemaObjectsDDL();
 		for (String ddl : ddls) {

@@ -14,7 +14,7 @@
 
 	<br/>	
 	<c:forEach var="tag" items="${comment.tags}">
-		<a href='<c:url value="/rest/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
+		<a href='<c:url value="/example/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
 	</c:forEach>
 	
 	<p>posted date: <fmt:formatDate pattern="MM-dd-yyyy HH:mm" value="${comment.createdDate}"/><p>

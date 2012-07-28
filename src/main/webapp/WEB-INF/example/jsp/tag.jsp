@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" href="../css/stardust-spring-example.css">
 </head>
 <body>
 
@@ -14,14 +15,14 @@
 
 	<br/>	
 	<c:forEach var="tag" items="${comment.tags}">
-		<a href='<c:url value="/rest/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
+		<a href='<c:url value="/example/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
 	</c:forEach>
 	
 	<p>posted date: <fmt:formatDate pattern="MM-dd-yyyy HH:mm" value="${comment.createdDate}"/><p>
 	<c:if test="${not empty comment.updatedDate}">
 		<p>edited date: <fmt:formatDate pattern="MM-dd-yyyy HH:mm" value="${comment.updatedDate}"/><p>
 	</c:if>
-	<p><a href='<c:url value="/rest/user/${comment.commenter.personId}"></c:url>'><c:out value="${comment.commenter.personName.firstName} ${comment.commenter.personName.lastName}"></c:out></a></p>
+	<p><a href='<c:url value="/example/user/${comment.commenter.personId}"></c:url>'><c:out value="${comment.commenter.personName.firstName} ${comment.commenter.personName.lastName}"></c:out></a></p>
 	
 </c:forEach>
 

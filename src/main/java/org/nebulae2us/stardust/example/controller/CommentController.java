@@ -48,7 +48,7 @@ public class CommentController {
 		
 		commentService.postComment(firstName, lastName, text, tags);
 		
-		return "redirect:/rest/comment";
+		return "redirect:/example/comment";
 	}
 	
 	@RequestMapping(value="/comment", method=RequestMethod.GET)
@@ -75,7 +75,7 @@ public class CommentController {
 	public String saveComment(@PathVariable("id") Long commentId, @RequestParam(value="text") String text, @RequestParam(value="tags") String tags) {
 
 		commentService.updateComment(commentId, text, tags);
-		return "redirect:/rest/comment";
+		return "redirect:/example/comment";
 	}
 
 	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)

@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../../css/app.css">
+<link rel="stylesheet" type="text/css" href="../../css/stardust-spring-example.css">
 </head>
 <body onload="document.getElementById('editedText').focus()">
 
@@ -26,7 +26,7 @@
 	
 	<c:if test="${comment.commentId == commentIdToEdit}">
 	<div class="comment-box">		
-		<form method="POST" action='<c:url value="/rest/comment/${comment.commentId}"></c:url>'>
+		<form method="POST" action='<c:url value="/example/comment/${comment.commentId}"></c:url>'>
 		<table>
 		<tr>
 			<td>
