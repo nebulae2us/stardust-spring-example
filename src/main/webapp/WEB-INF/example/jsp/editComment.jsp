@@ -7,6 +7,9 @@
 </head>
 <body onload="document.getElementById('editedText').focus()">
 
+<jsp:include page="intro.jsp"></jsp:include>
+<h2>Comments:</h2>
+
 <c:forEach var="comment" items="${comments}">
 	<c:if test="${comment.commentId != commentIdToEdit}">
 	<div class="comment-box">
@@ -27,7 +30,7 @@
 	<c:if test="${comment.commentId == commentIdToEdit}">
 	<div class="comment-box">		
 		<form method="POST" action='<c:url value="/example/app/comment/${comment.commentId}"></c:url>'>
-		<input name="_method" value="put">
+		<input type="hidden" name="_method" value="put">
 		<table>
 		<tr>
 			<td>

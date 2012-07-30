@@ -1,5 +1,9 @@
 <html>
-<body>
-<h2>Hello World!</h2>
-</body>
-</html>
+<head>
+<title>Your Page Title</title>
+<meta http-equiv="REFRESH" content="0;url=example/app/comment"></HEAD>
+<BODY>
+Optional page text here.
+</BODY>
+</HTML>
+

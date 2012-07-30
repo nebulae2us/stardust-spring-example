@@ -7,6 +7,9 @@
 </head>
 <body>
 
+<jsp:include page="intro.jsp"></jsp:include>
+<h2>Comments:</h2>
+
 <c:forEach var="comment" items="${comments}">
 
 <div class="comment-box">
@@ -24,13 +27,13 @@
 
 	
 	<div class="action-button-box">
-	<form id="deleteForm" method="post" action="<c:url value="/example/app/comment/${comment.commentId}"></c:url>">
+	<form id="deleteForm${comment.commentId}" method="post" action="<c:url value="/example/app/comment/${comment.commentId}"></c:url>">
 		<input type="hidden" name="_method" value="delete">
 		<input type="hidden" name="personId" value="<c:out value='${comment.commenter.personId}'></c:out>">
 		<a class="action-button-text" href='<c:url value="/example/app/comment/${comment.commentId}"></c:url>'>edit</a>
 		|
 		<a class="action-button-text" href="#"
-		   onclick="if (confirm('Are you sure you want to delete this comment?')) {document.getElementById('deleteForm').submit();} return false;"
+		   onclick="if (confirm('Are you sure you want to delete this comment?')) {document.getElementById('deleteForm${comment.commentId}').submit();} return false;"
 		>delete</a>
 	</form>
 	</div>
@@ -40,6 +43,7 @@
 
 <div class="comment-box">
 <form method="POST" action='<c:url value="/example/app/comment"></c:url>'>
+<p>Post new comment:</p>
 <table>
 <tr>
 	<td>
