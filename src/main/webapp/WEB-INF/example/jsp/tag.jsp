@@ -3,27 +3,26 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../css/stardust-spring-example.css">
+<link rel="stylesheet" type="text/css" href="../../css/stardust-spring-example.css">
 </head>
 <body>
 
-<h2><c:out value="${tag.name}"></c:out></h2>
+<h2>Tag: <c:out value="${tag.name}"></c:out></h2>
 
 <c:forEach var="comment" items="${comments}">
-	<p>...................</p>
-	<span><c:out value="${comment.text}"></c:out></span>
-
+<div class="comment-box">
+	<a class="commenter" href='<c:url value="/example/app/user/${comment.commenter.personId}"></c:url>'><c:out value="${comment.commenter.personName.firstName} ${comment.commenter.personName.lastName}"></c:out></a>
+	<span class="action-date">-&nbsp;<fmt:formatDate pattern="MMM dd, yyyy 'at' h:mm a" value="${comment.createdDate}"/></span>
+	<c:if test="${not empty comment.updatedDate}">
+		<span class="action-date">(edited: <fmt:formatDate pattern="MMM dd, yyyy 'at' h:mm a" value="${comment.updatedDate}"/>)</span>
+	</c:if>
+	<br>
+	<span class="comment"><c:out value="${comment.text}"></c:out></span>
 	<br/>	
 	<c:forEach var="tag" items="${comment.tags}">
-		<a href='<c:url value="/example/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
+		<a class="tag-box" href='<c:url value="/example/app/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
 	</c:forEach>
-	
-	<p>posted date: <fmt:formatDate pattern="MM-dd-yyyy HH:mm" value="${comment.createdDate}"/><p>
-	<c:if test="${not empty comment.updatedDate}">
-		<p>edited date: <fmt:formatDate pattern="MM-dd-yyyy HH:mm" value="${comment.updatedDate}"/><p>
-	</c:if>
-	<p><a href='<c:url value="/example/user/${comment.commenter.personId}"></c:url>'><c:out value="${comment.commenter.personName.firstName} ${comment.commenter.personName.lastName}"></c:out></a></p>
-	
+</div>
 </c:forEach>
 
 </body>

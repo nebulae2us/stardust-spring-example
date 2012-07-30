@@ -51,7 +51,7 @@
 	<bean id="daoManager" class="org.nebulae2us.stardust.DaoManager">
 		<constructor-arg ref="springManagedDataSource"/>
 		<constructor-arg ref="dialect"></constructor-arg>
-		<property name="packageToScan"><value>org.nebulae2us.stardust.example.model</value></property>
+		<property name="packageToScan"><value>org.nebulae2us.stardust.example.domain</value></property>
 	</bean>
 	
 	<!-- End Stardust configuration -->
@@ -60,6 +60,9 @@
 	
 	<bean id="commentService" class="org.nebulae2us.stardust.example.service.impl.CommentServiceImpl" autowire="byName" />
 	
+	<bean id="commentDao" class="org.nebulae2us.stardust.example.dao.impl.CommentDaoImpl" autowire="byName" />
+	
+	<bean id="domainContext" class="org.nebulae2us.stardust.example.domain.DomainContext" autowire="byName" />
 	
 	<!-- End Bean configuration -->
 

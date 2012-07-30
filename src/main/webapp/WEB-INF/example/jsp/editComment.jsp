@@ -26,11 +26,13 @@
 	
 	<c:if test="${comment.commentId == commentIdToEdit}">
 	<div class="comment-box">		
-		<form method="POST" action='<c:url value="/example/comment/${comment.commentId}"></c:url>'>
+		<form method="POST" action='<c:url value="/example/app/comment/${comment.commentId}"></c:url>'>
+		<input name="_method" value="put">
 		<table>
 		<tr>
 			<td>
 				<span class="commenter"><c:out value="${comment.commenter.personName.firstName} ${comment.commenter.personName.lastName}"></c:out></span>
+				<input type="hidden" name="personId" value="<c:out value='${comment.commenter.personId}'></c:out>">
 				<span class="action-date">-&nbsp;<fmt:formatDate pattern="MMM dd, yyyy 'at' h:mm a" value="${comment.createdDate}"/></span>
 					<c:if test="${not empty comment.updatedDate}">
 						<span class="action-date">(last edited: <fmt:formatDate pattern="MMM dd, yyyy 'at' h:mm a" value="${comment.updatedDate}"/>)</span>
@@ -46,7 +48,7 @@
 		<tr>
 			<td>
 				<label for="tags">Tag</label>
-				<input type="text" name="tags" id="tags">
+				<input type="text" name="tags" id="tags" style="width: 500px;" value="<c:out value='${comment.tagsAsCSV}'></c:out>">
 			</td>
 		</tr>
 		<tr>

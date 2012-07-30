@@ -21,9 +21,9 @@ import java.util.List;
 import org.nebulae2us.electron.util.Immutables;
 import org.nebulae2us.electron.util.MapBuilder;
 import org.nebulae2us.stardust.Filter;
-import org.nebulae2us.stardust.example.model.Comment;
-import org.nebulae2us.stardust.example.model.Person;
-import org.nebulae2us.stardust.example.model.Tag;
+import org.nebulae2us.stardust.example.domain.Comment;
+import org.nebulae2us.stardust.example.domain.Person;
+import org.nebulae2us.stardust.example.domain.Tag;
 import org.nebulae2us.stardust.example.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class CommentController {
 		
 		commentService.postComment(firstName, lastName, text, tags);
 		
-		return "redirect:/example/comment";
+		return "redirect:/example/app/comment";
 	}
 	
 	@RequestMapping(value="/comment", method=RequestMethod.GET)
@@ -71,13 +71,42 @@ public class CommentController {
 		return mav;
 	}
 	
-	@RequestMapping(value="/comment/{id}", method=RequestMethod.POST)
-	public String saveComment(@PathVariable("id") Long commentId, @RequestParam(value="text") String text, @RequestParam(value="tags") String tags) {
-
-		commentService.updateComment(commentId, text, tags);
-		return "redirect:/example/comment";
+	/**
+	 * 
+	 * 
+	 * Normally personId is determined by the logged-in user.
+	 * But this application does not have authentication and authorization built-in.
+	 * So it trust the personId passed by the request.
+	 * 
+	 * 
+	 * @param commentId
+	 * @param personId
+	 * @param text
+	 * @param tags
+	 * @return
+	 */
+	@RequestMapping(value="/comment/{id}", method=RequestMethod.PUT)
+	public String updateComment(@PathVariable("id") Long commentId, @RequestParam("personId") Long personId, @RequestParam(value="text") String text, @RequestParam(value="tags") String tags) {
+		commentService.updateComment(personId, commentId, text, tags);
+		return "redirect:/example/app/comment";
 	}
 
+	/**
+	 * Normally personId is determined by the logged-in user.
+	 * But this application does not have authentication and authorization built-in.
+	 * So it trust the personId passed by the request.
+	 * 
+	 * @param commentId
+	 * @param personId
+	 * @return
+	 */
+	@RequestMapping(value="/comment/{id}", method=RequestMethod.DELETE)
+	public String deleteComment(@PathVariable("id") Long commentId, @RequestParam("personId") Long personId) {
+		commentService.deleteComment(personId, commentId);
+		return "redirect:/example/app/comment";
+	}
+	
+	
 	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)
 	public ModelAndView userDetail(@PathVariable("id") Long personId) {
 		
@@ -102,9 +131,8 @@ public class CommentController {
 			throw new IllegalArgumentException("Cannot find tag with id = " + tagId);
 		}
 		
-		Filter filter = new Filter("t.tagId = ?", tagId);
-		List<Comment> comments = commentService.getComments(Immutables.$(filter));
-		
+		List<Comment> comments = commentService.getCommentsByTag(tagId);
+
 		ModelAndView mav = new ModelAndView("tag", new MapBuilder<String, Object>().put("comments", comments).put("tag", tag).toMap());
 
 		return mav;

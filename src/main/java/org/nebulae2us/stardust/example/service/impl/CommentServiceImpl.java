@@ -15,18 +15,15 @@
  */
 package org.nebulae2us.stardust.example.service.impl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import org.nebulae2us.electron.util.Immutables;
 import org.nebulae2us.stardust.DaoManager;
 import org.nebulae2us.stardust.Filter;
-import org.nebulae2us.stardust.dao.JdbcExecutor;
-import org.nebulae2us.stardust.example.model.Comment;
-import org.nebulae2us.stardust.example.model.Person;
-import org.nebulae2us.stardust.example.model.Tag;
+import org.nebulae2us.stardust.Query;
+import org.nebulae2us.stardust.example.domain.Comment;
+import org.nebulae2us.stardust.example.domain.DomainContext;
+import org.nebulae2us.stardust.example.domain.Person;
+import org.nebulae2us.stardust.example.domain.Tag;
 import org.nebulae2us.stardust.example.service.CommentService;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	private DaoManager daoManager;
 	
-	private JdbcExecutor jdbcExecutor;
+	private DomainContext domainContext;
 
 	/*
 	 * (non-Javadoc)
@@ -47,38 +44,27 @@ public class CommentServiceImpl implements CommentService {
 	 */
 	@Transactional
 	public void postComment(String firstName, String lastName, String text, String tags) {
-		
 		Person person = retrieveOrCreatePerson(firstName, lastName);
-		
-		Comment comment = new Comment(text, person, new Date());
-		daoManager.save(comment);
-		
-		List<String> tagList = Immutables.$(tags.split(",")).trimElement().removeEmpty();
-		addTagsToDatabase(tagList);
-		
-		if (tagList.size() > 0) {
-			List<Long> tagIds = jdbcExecutor.queryForListOfLong("select tag_id from tag where name in (:tagList)", Collections.singletonMap("tagList", tagList));
-			for (Long tagId : tagIds) {
-				jdbcExecutor.update("insert into comment_tag (comment_id, tag_id) values (?, ?)", Arrays.asList(comment.getCommentId(), tagId));
-			}
-		}
-		
+		person.postComment(domainContext, text, tags);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.nebulae2us.stardust.example.service.CommentService#updateComment(java.lang.Long, java.lang.String, java.lang.String)
 	 */
 	@Transactional
-	public void updateComment(Long commentId, String text, String tags) {
-
-		Comment comment = daoManager.get(Comment.class, commentId);
-		comment.setText(text);
-		comment.setUpdatedDate(new Date());
-		daoManager.update(comment);
-
-		
+	public void updateComment(Long personId, Long commentId, String text, String tags) {
+		Person person = daoManager.get(Person.class, personId);
+		person.updateComment(domainContext, commentId, text, tags);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.nebulae2us.stardust.example.service.CommentService#deleteComment(java.lang.Long)
+	 */
+	public void deleteComment(Long personId, Long commentId) {
+		Person person = daoManager.get(Person.class, personId);
+		person.deleteComment(domainContext, commentId);
+	}
+
 	private Person retrieveOrCreatePerson(String firstName, String lastName) {
 		Person person = daoManager.newQuery(Person.class)
 				.filterBy("personName.firstName = ?", firstName)
@@ -93,16 +79,6 @@ public class CommentServiceImpl implements CommentService {
 		return person;
 	}
 	
-	private void addTagsToDatabase(List<String> tagList) {
-		if (tagList.size() > 0) {
-			List<String> existTags = jdbcExecutor.queryForListOfString("select name from tag where name in (:tagList)", Collections.singletonMap("tagList", tagList));
-			List<String> newTags = Immutables.$(tagList).minus(existTags);
-			for (String _tag : newTags) {
-				Tag tag = new Tag(_tag);
-				daoManager.save(tag);
-			}
-		}
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -115,6 +91,27 @@ public class CommentServiceImpl implements CommentService {
 				.innerJoin("commenter", "p")
 				.outerJoin("tags", "t")
 				.filterBy(filters)
+				.orderBy("createdDate")
+				.orderBy("t.name")
+				.list();
+		
+		return comments;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nebulae2us.stardust.example.service.CommentService#getCommentsByTag(java.lang.Long)
+	 */
+	public List<Comment> getCommentsByTag(Long tagId) {
+		Query<?> subQuery = daoManager.newQuery(Comment.class)
+				.innerJoin("tags", "t")
+				.select("commentId")
+				.filterBy("t.tagId = ?", tagId)
+				.toQuery();
+		
+		List<Comment> comments = daoManager.newQuery(Comment.class)
+				.innerJoin("commenter", "p")
+				.outerJoin("tags", "t")
+				.filterBy("commentId in (?)", subQuery)
 				.orderBy("createdDate")
 				.orderBy("t.name")
 				.list();
@@ -141,8 +138,8 @@ public class CommentServiceImpl implements CommentService {
 		this.daoManager = daoManager;
 	}
 
-	public final void setJdbcExecutor(JdbcExecutor jdbcExecutor) {
-		this.jdbcExecutor = jdbcExecutor;
+	public final void setDomainContext(DomainContext domainContext) {
+		this.domainContext = domainContext;
 	}
 
 

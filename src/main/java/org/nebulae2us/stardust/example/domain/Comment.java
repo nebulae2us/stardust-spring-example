@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.nebulae2us.stardust.example.model;
+package org.nebulae2us.stardust.example.domain;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +29,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.nebulae2us.electron.util.Immutables;
+import org.nebulae2us.stardust.DaoManager;
+import org.nebulae2us.stardust.example.dao.CommentDao;
 
 /**
  * @author Trung Phan
@@ -111,11 +115,40 @@ public class Comment {
 		return tags;
 	}
 
-	public final void setTags(List<Tag> tags) {
-		this.tags = tags;
+	public final String getTagsAsCSV() {
+		StringBuilder result = new StringBuilder();
+		if (tags != null) {
+			for (Tag tag : tags) {
+				if (result.length() > 0) {
+					result.append(", ");
+				}
+				result.append(tag.getName());
+			}
+		}
+		return result.toString();
 	}
-
 	
+	public void updateComment(DomainContext domainContext, String newText, String newTagsAsCSV) {
+		DaoManager daoManager = domainContext.getDaoManager();
+		
+		this.text = newText;
+		this.updatedDate = new Date();
+		daoManager.update(this);
+		
+		this.assignTags(domainContext, newTagsAsCSV);
+	}	
 	
+	public void assignTags(DomainContext context, String tagsAsCSV) {
+		CommentDao commentDao = context.getCommentDao();
+		
+		List<String> newTags = Immutables.$(tagsAsCSV.split(",")).trimElement().removeEmpty();
+		commentDao.assignTagsToComment(commentId, newTags);
+		
+	}
+	
+	public void removeAllTags(DomainContext context) {
+		CommentDao commentDao = context.getCommentDao();
+		commentDao.assignTagsToComment(commentId, Immutables.emptyStringList());
+	}
 	
 }

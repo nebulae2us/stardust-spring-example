@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.nebulae2us.stardust.example.model;
+package org.nebulae2us.stardust.example.domain;
 
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 
 /**
@@ -30,41 +29,38 @@ import javax.persistence.SequenceGenerator;
  *
  */
 @Entity
-public class Person {
+public class Tag {
+
+	public Tag() {}
 	
-	public Person() {}
-	
-	public Person(String firstName, String lastName) {
-		this.personName = new PersonName();
-		this.personName.setFirstName(firstName);
-		this.personName.setLastName(lastName);
+	public Tag(String name) {
+		this.name = name;
 	}
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_seq")
-	@SequenceGenerator(name = "person_seq", sequenceName = "person_seq")
-	private Long personId;
-
-	@Embedded
-	private PersonName personName;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_seq")
+	@SequenceGenerator(name = "tag_seq", sequenceName = "tag_seq")
+	private Long tagId;
 	
-	@OneToMany(mappedBy = "commenter")
+	private String name;
+	
+	@ManyToMany(mappedBy = "tags")
 	private List<Comment> comments;
 
-	public final Long getPersonId() {
-		return personId;
+	public final Long getTagId() {
+		return tagId;
 	}
 
-	public final void setPersonId(Long personId) {
-		this.personId = personId;
+	public final void setTagId(Long tagId) {
+		this.tagId = tagId;
 	}
 
-	public final PersonName getPersonName() {
-		return personName;
+	public final String getName() {
+		return name;
 	}
 
-	public final void setPersonName(PersonName personName) {
-		this.personName = personName;
+	public final void setName(String name) {
+		this.name = name;
 	}
 
 	public final List<Comment> getComments() {
@@ -74,7 +70,7 @@ public class Person {
 	public final void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-
+	
 	
 	
 }

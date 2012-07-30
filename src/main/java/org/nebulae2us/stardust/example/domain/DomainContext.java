@@ -13,32 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.nebulae2us.stardust.example.model;
+package org.nebulae2us.stardust.example.domain;
+
+import org.nebulae2us.stardust.DaoManager;
+import org.nebulae2us.stardust.example.dao.CommentDao;
 
 /**
  * @author Trung Phan
  *
  */
-public class PersonName {
+public class DomainContext {
 
-	private String firstName;
+	private DaoManager daoManager;
 	
-	private String lastName;
-
-	public final String getFirstName() {
-		return firstName;
+	private CommentDao commentDao;
+	
+	public final DaoManager getDaoManager() {
+		return daoManager;
 	}
 
-	public final void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public final void setDaoManager(DaoManager daoManager) {
+		this.daoManager = daoManager;
 	}
 
-	public final String getLastName() {
-		return lastName;
+	public final CommentDao getCommentDao() {
+		return commentDao;
 	}
 
-	public final void setLastName(String lastName) {
-		this.lastName = lastName;
+	public final void setCommentDao(CommentDao commentDao) {
+		this.commentDao = commentDao;
 	}
 	
 	

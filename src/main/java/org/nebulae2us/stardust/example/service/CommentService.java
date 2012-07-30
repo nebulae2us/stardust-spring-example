@@ -18,9 +18,9 @@ package org.nebulae2us.stardust.example.service;
 import java.util.List;
 
 import org.nebulae2us.stardust.Filter;
-import org.nebulae2us.stardust.example.model.Comment;
-import org.nebulae2us.stardust.example.model.Person;
-import org.nebulae2us.stardust.example.model.Tag;
+import org.nebulae2us.stardust.example.domain.Comment;
+import org.nebulae2us.stardust.example.domain.Person;
+import org.nebulae2us.stardust.example.domain.Tag;
 
 /**
  * @author Trung Phan
@@ -28,14 +28,57 @@ import org.nebulae2us.stardust.example.model.Tag;
  */
 public interface CommentService {
 	
+	/**
+	 * Create new {@link Comment}
+	 * 
+	 * @param firstName
+	 * @param lastName
+	 * @param text
+	 * @param tags
+	 */
 	public void postComment(String firstName, String lastName, String text, String tags);
 	
-	public void updateComment(Long commentId, String text, String tags);
+	/**
+	 * Update existing {@link Comment}
+	 * @param commentId
+	 * @param text
+	 * @param tags
+	 */
+	public void updateComment(Long personId, Long commentId, String text, String tags);
 	
+	/**
+	 * Delete the {@link Comment}
+	 * @param commentId
+	 */
+	public void deleteComment(Long personId, Long commentId);
+	
+	/**
+	 * Retrieve list of {@link Comment}s. Filter the list of filters are provided.
+	 * @param filters
+	 * @return
+	 */
 	public List<Comment> getComments(List<Filter> filters);
-	
+
+	/**
+	 * Retrieve list of {@link Comment}s for a particular tagId.
+	 * 
+	 * @param tagId
+	 * @return
+	 */
+	public List<Comment> getCommentsByTag(Long tagId);
+
+	/**
+	 * Retrieve {@link Person}
+	 * @param personId
+	 * @return
+	 */
 	public Person getPerson(Long personId);
 	
+	/**
+	 * Retrieve {@link Tag}
+	 * @param tagId
+	 * @return
+	 */
 	public Tag getTag(Long tagId);
 
 }
