@@ -28,8 +28,8 @@
 	</c:if>
 	
 	<c:if test="${comment.commentId == commentIdToEdit}">
-	<div class="comment-box">		
-		<form method="POST" action='<c:url value="/example/app/comment/${comment.commentId}"></c:url>'>
+	<div class="comment-box">
+		<form method="POST" action="${pageContext.request.contextPath}/example/app/comment/${comment.commentId}">
 		<input type="hidden" name="_method" value="put">
 		<table>
 		<tr>

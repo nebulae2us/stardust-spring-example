@@ -15,7 +15,7 @@
 	<span class="comment"><c:out value="${comment.text}"></c:out></span>
 	<br>
 	<c:forEach var="tag" items="${comment.tags}">
-		<a class="tag-box" href='<c:url value="/example/app/tag/${tag.tagId}"></c:url>'><c:out value="${tag.name}"></c:out></a>
+		<a class="tag-box" href="${pageContext.request.contextPath}/example/app/tag/${tag.tagId}"><c:out value="${tag.name}"></c:out></a>
 	</c:forEach>
 	<br>
 	<span class="action-date">&nbsp;&nbsp;<fmt:formatDate pattern="MMM dd, yyyy 'at' h:mm a" value="${comment.createdDate}"/></span>
