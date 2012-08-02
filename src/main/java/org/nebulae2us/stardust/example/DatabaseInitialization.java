@@ -15,7 +15,10 @@
  */
 package org.nebulae2us.stardust.example;
 
+import java.sql.Connection;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.nebulae2us.stardust.DaoManager;
 import org.nebulae2us.stardust.dao.JdbcExecutor;
@@ -30,6 +33,9 @@ public class DatabaseInitialization implements InitializingBean {
 
 	private DaoManager daoManager;
 	private JdbcExecutor jdbcExecutor;
+	private DataSource dataSource;
+	
+	private Connection tempConnection;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -40,6 +46,9 @@ public class DatabaseInitialization implements InitializingBean {
 		for (String ddl : ddls) {
 			jdbcExecutor.execute(ddl);
 		}
+		
+		// keep one connection so that in-memory does not shutdown
+		this.tempConnection = dataSource.getConnection();
 	}
 
 	public final void setDaoManager(DaoManager daoManager) {
@@ -48,6 +57,10 @@ public class DatabaseInitialization implements InitializingBean {
 	
 	public final void setJdbcExecutor(JdbcExecutor jdbcExecutor) {
 		this.jdbcExecutor = jdbcExecutor;
+	}
+
+	public final void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	
